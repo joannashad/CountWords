@@ -16,11 +16,22 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 /**
@@ -28,10 +39,67 @@ import javafx.stage.Stage;
  * @author joanna
  */
 public class FXMain extends Application {
+    private static String strWebsite="";
+    private int cnt = 0;
     
     @Override
     public void start(Stage primaryStage) {
-        CountWords();
+                GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        String strWeb = "https://www.gutenberg.org/files/1065/1065-h/1065-h.htm";
+    
+        StackPane root = new StackPane();
+        Label lbl = new Label("Provide a website to count the number of words.");
+        lbl.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        grid.add(lbl, 1, 0); 
+        TextField txt = new TextField();
+        txt.setText(strWeb);
+        txt.setPrefWidth(400);        
+        grid.add(txt, 1, 1,2,1);
+        
+        
+        Button btn1 = new Button();
+        btn1.setText("Count Words");
+        btn1.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("Improper input");
+                //check there is something in the text bos
+                if(txt.getText().length() == 0){
+                    alert.setContentText("Please proviide a website address.") ;
+                    alert.showAndWait();}
+                //check that the website is valid
+                else if(!isValid(txt.getText())){
+                    alert.setContentText("Website entered is not valid.");
+                    alert.showAndWait();}
+                else{
+                    strWebsite = txt.getText();
+                    cnt = CountWords();
+                
+                    alert.setContentText("There are " + cnt + " words in this passage.");
+                    alert.setTitle("Count");
+                    alert.setHeaderText("Word Count");
+                    alert.showAndWait();
+            }}
+        });
+        
+        grid.add(btn1, 1, 2);
+        
+        Scene scene = new Scene(grid, 500, 200);
+        
+        primaryStage.setTitle("Word Count application.");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    
+
+
+       
 
     }
 
@@ -39,11 +107,14 @@ public class FXMain extends Application {
         launch(args);
     }
   
-    public static void CountWords(){
+    public static int CountWords(){
+        int totalWordCount=0;
+        int wordCount=0;
         try{
-            int wordCount = 0; //start with 0 count
+          //int wordCount = 0; //start with 0 count
         //location of the poem
-        URL url = new URL("https://www.gutenberg.org/files/1065/1065-h/1065-h.htm");
+        
+        URL url = new URL(strWebsite);
         //set the file up so it can be read
         System.out.println("Open file and read the contents.");
         BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -62,7 +133,7 @@ public class FXMain extends Application {
             readLine = readLine.replaceAll("&mdash;","");
             readLine = readLine.replaceAll("[^a-zA-Z0-9]"," ");
             //the start of the actual poem
-                 
+            if(strWebsite.contains("gutenberg")){
             if(readLine.contains("Once upon a midnight drear"))
                 startFile=1;
             //the end of the poem     
@@ -72,6 +143,10 @@ public class FXMain extends Application {
             //add the line to the file
             if(startFile !=0)
                     readFile+=readLine;
+            }
+            else{
+                readFile+=readLine;
+            }
         }
         
         System.out.println("close reader ");
@@ -108,8 +183,10 @@ public class FXMain extends Application {
                  
                 wordCount=0;
                }
+               
         }
          
+        totalWordCount = listOfWords.size();
         
         System.out.println("sort");
         
@@ -153,7 +230,25 @@ public class FXMain extends Application {
         }
         
         System.out.println("Finished!");
-        System.exit(0);
-    }
+        //System.exit(0);
+    
+   
+        return totalWordCount;
 }
-      
+     /* Returns true if url is valid */
+    public static boolean isValid(String url)
+    {
+        /* Try creating a valid URL */
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+          
+        // If there was an Exception
+        // while creating URL object
+        catch (Exception e) {
+            return false;
+        }
+    
+    }
+}      
