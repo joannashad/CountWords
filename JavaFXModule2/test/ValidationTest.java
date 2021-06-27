@@ -27,11 +27,12 @@ public class ValidationTest {
     @Test
     public void testCheckLength() {
         System.out.println("checkLength");
-        String website="https://www.gutenberg.org/files/1065/1065-h/1065-h.htm";
-        String website2="https://www.sportingnews.com/us/athletics/news/tour-de-france-2021-fan-sign-crash-allez-opi-omi/r230uew3fe7n15v3eyfbd353o";
+        String website="https://www.gutenberg.org/files/1065/1065-h/1065-h.htm";                
+        String website2="https://en.wikipedia.org/wiki/Wyoming";
         String website3=" ";
         String website4=null;
         String website5="https://";
+        String website6="https://en.wikipedia.org/wiki/Botanical_garden";
         
         Validation instance = new Validation();
         String expResult = "";
@@ -44,7 +45,9 @@ public class ValidationTest {
         result = instance.checkLength(website4);
         assertFalse(result.length()==0); 
         result = instance.checkLength(website5);
-        assertTrue(result.length()==0);  
+        assertTrue(result.length()==0);
+        result = instance.checkLength(website6);
+        assertEquals(expResult, result);    
     }
 
     /**
@@ -52,11 +55,12 @@ public class ValidationTest {
      */
     @Test
     public void testCheckValid() {
-        String website="https://www.gutenberg.org/files/1065/1065-h/1065-h.htm";        
-        String website2="https://www.sportingnews.com/us/athletics/news/tour-de-france-2021-fan-sign-crash-allez-opi-omi/r230uew3fe7n15v3eyfbd353o";
+        String website="https://www.gutenberg.org/files/1065/1065-h/1065-h.htm";                
+        String website2="https://en.wikipedia.org/wiki/Wyoming";
         String website3=" ";
         String website4=null;
         String website5="https://";
+        String website6="https://en.wikipedia.org/wiki/Botanical_garden";
         System.out.println("checkValid");
         Validation instance = new Validation();
         String expResult = "";
@@ -70,6 +74,8 @@ public class ValidationTest {
         assertFalse(result.length()==0);
         result = instance.checkValid(website5);
         assertFalse(result.length()==0);
+        result = instance.checkLength(website6);
+        assertEquals(expResult, result);
     }
 
     
