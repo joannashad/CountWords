@@ -1,4 +1,6 @@
 /*
+ *  File: FXMain.java
+ *  Description: 
 *  Opens the poem, The Raven
 *  https://www.gutenberg.org/files/1065/1065-h/1065-h.htm
 *  Reads each line, removes html tags and special characters
@@ -6,7 +8,9 @@
 *  Counts how many times the word appears in the poem
 *  Sorts the words in descending order of word count
 *  Writes the top 20 resulsts to words.txt file
+ *  Author: Joanna Smith
  */
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -36,11 +40,35 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-/**
- *
- * @author joanna
- */
+    /** 
+* Creates a JavaFX form
+* with a <code>textfield</code> to enter a website url
+* and a button to perform calculations
+* and perform validation on the <code>textfield</code> 
+* to check that the url is in the correct format and is not null or empty string
+* <p>
+* If a value in the <code>textbox</code> is empty or null
+* alert will appear indicating a value is needed.
+* If a value in the <code>textbox</code> is not in the corr3ect format
+* alert will appear indicating the value is not a valid url.
+* <p>
+* If the value entered is valid, the program will read the file
+* strip out html and special characters,
+* <ul>
+* <li>collect all of the words in the file in an <code>array</code>,
+* <li> Count the number of words in the <code>array</code>
+* <li> Sort the <code>array</code> by the highest count
+* <li> Display the top 20 words to output in order by top word count
+* <li> Write the top 20 words to a file.
+* </ul>
+* @author: Joanna Smith
+* @version    3.0
+* @see             Class Validation
+* @see             Class WordCount
+*/
+
 public class FXMain extends Application {
+
     private static String strWebsite="";
     private int cnt = 0;
     private static String strResults="";

@@ -11,27 +11,81 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 /**
+ * 
+ *  File: WordCount.java
+ *  Description: strips the html out of the website
+ *               counts the ocurrances of each word
+ *               lists the top 20 most words in the url
  *
- * @author joann
+ *   @author: Joanna Smith
+ *   @version  3.0 
  */
 public class WordCount {
+ /** 
+* Once the validation is done on the provided url, the program will read the file
+* <li>strip out html and special characters,</li>
+* <li>collect all of the words in the file in an array,</li>
+* <li> Count the number of words in the array</li>
+* <li> Sort the array by the highest count</li>
+* <li> Display the top 20 words to output in order by top word count</li>
+* <li> Write the top 20 words to a file.</li>
+*
+* @param website   the url used for reading the words in the file
+* @param x         the x-coordinate of the northwest corner
+*                  of the destination rectangle in pixels
+* @param y         the y-coordinate of the northwest corner
+*                  of the destination rectangle in pixels
+* @param observer  the image observer to be notified as more
+*                  of the image is converted.  May be 
+*                  <code>null</code>
+* @return          <code>true</code> if the image is completely 
+*                  loaded and was painted successfully; 
+*                  <code>false</code> otherwise.
+* @see             Validation
+* @see             WordCount
+* @since           1.0
+*/
+
     private static String strWebsite="";
     private int cnt = 0;
     public String strResults="";
 
     WordCount(String website) {
+/** 
+* Once the validation is done on the provided url, 
+* the New() constructor requires a website parameter.
+* The constructor sets the private variable to be used
+* in the CountWords method
+*
+* @param website   the url used for reading the words in the file
+* @see             CountWords
+* @since           1.0
+*/
         strWebsite = website;
     }
 
-    
+    /** 
+* Once the validation is done on the provided url, the program will read the file
+* <ul>
+* <li> Uses a <code>BufferedReader</code> to read the file.
+* <li> Uses <code>reader.readLine</code> to read each line of the file.
+* <li> Uses <code>readLine.replaceAll</code> to strip out html and special characters,
+* <li> Use <code>HashMap </code> to collect all of the words in the file to an array,
+* <li> Count the number of words in the array
+* <li> Use <code>Map </code> to Sort the array by the highest count
+* <li> Display the top 20 words to output in order by top word count
+* <li> Use <code>BufferedWriter</code> to write the top 20 words to a file.
+* </ul>
+*
+* @return          <code>totalWordCount</code> integer the total number of
+*                  words found in the file
+* @since           1.0
+*/
     public int CountWords(){
+
         int totalWordCount=0;
         int wordCount=0;
         try{

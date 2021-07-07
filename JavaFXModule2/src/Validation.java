@@ -5,19 +5,34 @@ import java.net.URL;
 
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Validation for fields on the form
  */
 
+
 /**
- *
- * @author joann
+ *  File: Validation.java
+ *  Description: checks the length of the value from the form
+ *               verifies it is not null
+ *               verifies it is a valid url
+ *               returns error message to be passed back to the form
+ * 
+ * 
+ *  Author: Joanna Smith
  */
 public class Validation {
     public Validation(){
         
     }
+    /** 
+* Check if the website/url is null or blank
+*
+* @param            website     value provided from the <code>texbox</code> on the form  
+*                   
+* @return          blank if there is no error, error message if there is an error
+* @see             checkValid
+* @see             WordCount
+* @since           1.0
+*/
     public String checkLength(String website){
         try{
         if(website !=null)
@@ -30,7 +45,17 @@ public class Validation {
         catch(Exception e){
             return "Please provide a website address.";
         }
-    }
+    }   
+    /**
+* Check if the website/url is a valid url
+*
+* @param            website   value provided from the <code>texbox</code> on the form 
+*                  
+* @return          blank if there is no error, error message if there is an error
+* @see             checkLength
+* @see             isValid
+* @since           1.0
+*/
     public String checkValid(String website){
         try{
         if(website !=null)
@@ -46,6 +71,18 @@ public class Validation {
         }
             
     }
+    /**           
+* Check if the website/url is a valid url
+*
+* @author: Joanna Smith
+* @version  3.0
+* @param            url   value provided from the <code>texbox</code> on the form 
+*                  
+* @return          returns true if the website is a valid url
+*                  returns false if not valid
+* @see             checkValid
+* @see             checkLength
+*/
          /* Returns true if url is valid */
     public boolean isValid(String url)
     {

@@ -6,10 +6,19 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author joann
+ * 
+ *  File: ValidationTest.java
+ *  Description: checks that the checkLength and checkValid
+ *               methods are working correctly from Validation.java
+ * 
+ * 
+ *   @author: Joanna Smith
+ *   @version  3.0 
  */
-public class ValidationTest {
+public class ValidationTest {/**
+* Sole constructor. (For invocation by subclass 
+* constructors, typically implicit.)
+*/
     public ValidationTest() {
     }
     

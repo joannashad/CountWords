@@ -1,17 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+
 /**
- *
- * @author joann
+ * 
+ *  File: WordCountTest.java
+ *  Description: checks the WordCount method from WordCount.java
+ *               to verify it counts the number of words in the url
+ * 
+ * 
+ *   @author: Joanna Smith
+ *   @version  3.0 
  */
 public class WordCountTest {
     
