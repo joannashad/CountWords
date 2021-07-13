@@ -127,7 +127,8 @@ public class FXMain extends Application {
                     lblResults.setWrapText(true);
                     lblResults.setPrefWidth(400);
                     grid.add(lblResults, 1, 4);
-                    alert.setContentText("There are " + cnt + " words in this passage.");
+                    alert.setContentText("Finished!");
+                    //alert.setContentText("There are " + cnt + " words in this passage.");
                     alert.setTitle("Count");
                     alert.setHeaderText("Word Count");
                     alert.showAndWait();

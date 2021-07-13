@@ -5,11 +5,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.sql.rowset.CachedRowSet;
 
 
 
@@ -131,85 +134,54 @@ public class WordCount {
         System.out.println("close reader ");
         reader.close();
         
-        
-        HashMap<String, Integer> listOfWords = new HashMap<String, Integer>();
-        
         System.out.println("separate the individual words");
         String[] words =  readFile.split(" ");
         String[] words2 =  readFile.split(" ");
         String thisWord="";
-        //loop through each word in the array
+        DA da = new DA();
+        //first delete the words that are in the table
+        da.deleteWords();
         
-        System.out.println("loop through each word, create array");
+        //loop through each word in the array
+        System.out.println("loop through each word, save to db");
         for(int i=0; i<words.length; i++){
                thisWord = words[i];
                if(thisWord.length()>1) {
                    thisWord=thisWord.toLowerCase();
-                   //loop through the array again to count the words
-                   
-                 for(int a=0; a<words2.length; a++){
-                    if(words2[a].length()>0){
-                    String thatWord = words2[a].toString();
-                    //count the number of words
-                    if (thisWord.equals(thatWord)) {
-                        wordCount++;
-                    }
-                    }
-                }
-                 //put the word and count in a HashMap
-                 if(!listOfWords.containsKey(thisWord)){
-                   listOfWords.put((String) thisWord, wordCount);  
-                 }
-                 
-                wordCount=0;
-               }
-               
+                   //save each instance of the word in the database
+                   da.saveWordCount(thisWord,1);
+               }  
         }
-         
-        totalWordCount = listOfWords.size();
         
-        System.out.println("sort");
-        
-        //use a LinkedHashMap to sort the words in descending order by count
-       try {
-        Map<String, Integer> sortedMap = listOfWords.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (a, b) -> { throw new AssertionError(); },
-                        LinkedHashMap::new
-                ));
-
-        
-        sortedMap.putAll(listOfWords);
         //write to a file
          BufferedWriter out = new BufferedWriter(new FileWriter("Words.txt"));
-        
-        int i=0;
-        //loop through each entry
-         for (Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
-             if(i<20){
-             out.write(entry.getKey() + " : " + entry.getValue() + System.lineSeparator());
-             System.out.println(entry.getKey() + ": " + entry.getValue());
-             strResults+=entry.getKey() + ": " + entry.getValue() + System.lineSeparator();
-             i++;
-             }
+         try{
+          
+        System.out.println("get the top 20 results from the db");
+        CachedRowSet rowset =  da.getWords(true);
+        System.out.println("Resultset length: " + rowset.size() );
+        //loop through each row in the resultset
+
+        while (rowset.next()) {
+            String  rsWord= rowset.getString("word");
+            int rsCount=rowset.getInt("sum_count");
+            System.out.println(rsWord + ": " + rsCount );
+            strResults +=rsWord + ": " + rsCount + System.lineSeparator();
+        }  
+        //grab the total word count from the database
+        totalWordCount = da.getWordCount();
+         }
+         catch(Exception e){
+             
+          System.out.println("Error: " + e.getMessage());
          }
         //close the file
          out.close();
-         System.out.println("File created successfully");
       }
       catch (IOException e) {
           System.out.println("Error: " + e.getMessage());
       }
-        
-            
-        }
-        catch(Exception e){
-            System.out.println("Error " + e.getMessage());
-        }
-        
+                
         System.out.println("Finished!");
         //System.exit(0);
     
@@ -217,3 +189,4 @@ public class WordCount {
         return totalWordCount;
 }
 }
+
