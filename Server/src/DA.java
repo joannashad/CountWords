@@ -21,6 +21,7 @@ import javax.sql.rowset.RowSetProvider;
 * @author: Joanna Smith
 * @version    4.0
 * @see             Class MySQLAccess
+* @see             Class WordCount
 */
 public class DA {
   /** 
@@ -45,7 +46,9 @@ public class DA {
            }
            catch(Exception e)
            {
-               System.out.println(e.getMessage());}
+               e.printStackTrace();
+           }
+               //System.out.println(e.getMessage());}
            
            }
      /** 
@@ -68,9 +71,11 @@ public class DA {
            }
            catch(Exception e)
            {
-               System.out.println(e.getMessage());}
+               e.printStackTrace();
+               //System.out.println(e.getMessage());}
            
            }
+    }
     /** 
 * deleteWords
 * deletes all the words out of the table 
@@ -87,8 +92,9 @@ public class DA {
                 String query = "call deleteWords";
                 mySQL.execSP(query);
            }
-           catch(Exception e){               
-               System.out.println(e.getMessage());
+           catch(Exception e){  
+               e.printStackTrace();
+               //System.out.println(e.getMessage());
            }
     }
     /** 
@@ -99,16 +105,26 @@ public class DA {
 * may also show only the top 20 words
 * 
 * @param top20  a boolean parameter to indicate if the top 20 count is wanted
+* @return CachedRowSet  the results of the list of words
+* @throws Exception exception
 * @author: Joanna Smith
 * @version    4.0
 */
     public CachedRowSet getWords(boolean top20)throws Exception{
+        CachedRowSet resultSet =null;
+            try{
+                    MySQLAccess mySQL = new MySQLAccess();
+                    String query = "call getWords (?)";
+                    List<String> params = new ArrayList<>();
+                         params.add("true");
+                    resultSet =mySQL.execResultSet(query, params);
 
-        MySQLAccess mySQL = new MySQLAccess();
-        String query = "call getWords (?)";
-        List<String> params = new ArrayList<>();
-             params.add("true");
-        CachedRowSet resultSet =mySQL.execResultSet(query, params);
+            }
+
+           catch(Exception e){  
+               e.printStackTrace();
+               //System.out.println(e.getMessage());
+           }
 
         return resultSet;
  
@@ -118,15 +134,23 @@ public class DA {
 * grabs the total number of words found in the file
 
 * 
+* @throws Exception exception
+* @return int wordCount 
 * @author: Joanna Smith
 * @version    4.0
 */
     public int getWordCount()throws Exception{
-
+        int wordCount=0;
+            try{
         MySQLAccess mySQL = new MySQLAccess();
         String query = "call getWordCount";
         CachedRowSet resultSet =mySQL.execResults(query);
-        int wordCount = resultSet.getInt("sum_count");
+        wordCount = resultSet.getInt("sum_count");            }
+
+           catch(Exception e){  
+               e.printStackTrace();
+               //System.out.println(e.getMessage());
+           }
         return wordCount;
     }  
 }

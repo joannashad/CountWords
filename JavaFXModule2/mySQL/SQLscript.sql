@@ -1,77 +1,72 @@
-use wordcount;
+ call getWords(false);
 CREATE database word_count;
 USE word_count;
-
-DROP table IF EXISTS word;
+DROP table IF EXISTS word ;
 CREATE TABLE word (
      id MEDIUMINT NOT NULL AUTO_INCREMENT,
-     word CHAR(100) NOT NULL,
-     count int NOT NULL,
+     word CHAR(255) NOT NULL,
+     wordcount int NOT NULL,
      PRIMARY KEY (id)
      
 );
-call getWords('true');
 DROP procedure IF EXISTS getWords;
 DELIMITER //
 CREATE PROCEDURE getWords(
-	in top varchar(10)
+	in top boolean
 )
 BEGIN
-IF top='false' THEN 
+IF top=false THEN 
 	
 	SELECT * 
  	FROM word
-	ORDER BY word.count;
+	ORDER BY word.wordcount;
 
 ELSE 
-	SELECT word,SUM(count) as sum_count 
+	SELECT word,SUM(wordcount) as 'wordcount' 
  	FROM word
-    GROUP BY word
-	ORDER BY sum(count) desc
+	GROUP BY word
+    ORDER BY SUM(wordcount) DESC
 	LIMIT 20;
     
 END IF;
 
 END; //
-use wordcount;
-GRANT EXECUTE ON wordcount.getWords TO 'mySQLuser'@'' IDENTIFIED BY 'secret' ;
-
+GRANT execute ON word_count.getWords TO 'dbUser'@'localhost'  identified by 'password';
+call insertWord 'joanna',1;
 DELIMITER ;
-call insertWord('the',1);
 DROP procedure IF EXISTS insertWord;
 delimiter //
-
 CREATE PROCEDURE insertWord(
-	in word varchar(100),
+	in word varchar(255),
     wordcount int
 )
 BEGIN
 
 	INSERT INTO 
-    word
-    (word,count)
+    word_count.word
+    (word,wordcount)
     VALUES
     (word,wordcount);
     
     
 END; //
-GRANT execute ON wordcount.insertWord TO 'dbUser'@'localhost'  identified by 'password';
+GRANT execute ON word_count.insertWord TO 'dbUser'@'localhost'  identified by 'password';
 DROP procedure IF EXISTS getWord;
 
 delimiter //
 CREATE PROCEDURE getWord (
-	in myword varchar(100)
+	in myword varchar(255)
 )
 BEGIN
 
-	SELECT word, SUM(count) as wordcount
-    from word
+	SELECT word, SUM(wordcount) as wordcount
+    from word_count.word
     WHERE word=myword
     group by word;
     
     
 END; //
-GRANT execute ON wordcount.insertWord TO 'dbUser'@'localhost'  identified by 'password';
+GRANT execute ON word_count.insertWord TO 'dbUser'@'localhost'  identified by 'password';
 
 DELIMITER ;
 DROP procedure IF EXISTS deleteWords;
@@ -80,9 +75,20 @@ CREATE PROCEDURE deleteWords()
 BEGIN
 
 	DELETE from 
-    word;    
+    word_count.word;    
     
 END; //
 
-GRANT execute ON wordcount.deleteWords TO 'dbUser'@'localhost'  identified by 'password';
+DROP procedure IF EXISTS getWordCount;
+call getWordCount;
+delimiter //
+CREATE PROCEDURE getWordCount()
+BEGIN
+
+	SELECT sum(wordcount) as sum_count from 
+    word_count.word
+    ;    
+    
+END; //
+GRANT execute ON word_count.deleteWords TO 'dbUser'@'localhost'  identified by 'password';
 DELIMITER ;

@@ -14,9 +14,12 @@
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.Socket;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -52,22 +55,21 @@ import javafx.stage.Stage;
 * If a value in the <code>textbox</code> is not in the corr3ect format
 * alert will appear indicating the value is not a valid url.
 * <p>
-* If the value entered is valid, the program will read the file
-* strip out html and special characters,
-* <ul>
-* <li>collect all of the words in the file in an <code>array</code>,
-* <li> Count the number of words in the <code>array</code>
-* <li> Sort the <code>array</code> by the highest count
-* <li> Display the top 20 words to output in order by top word count
-* <li> Write the top 20 words to a file.
-* </ul>
+* If the value entered is valid, the client will send the website
+* address to the server for processing.
+* <p> The server will send back a list of the top 20 words
+* sorted in descending order by word count
+* <p> The client will display the top 20 words to output 
+* and write the top 20 words to a file.
 * @author: Joanna Smith
 * @version    3.0
 * @see             Class Validation
-* @see             Class WordCount
 */
 
 public class FXMain extends Application {
+    // IO streams
+    DataOutputStream toServer = null;
+    DataInputStream fromServer = null;
 
     private static String strWebsite="";
     private int cnt = 0;
@@ -97,7 +99,7 @@ public class FXMain extends Application {
             
             @Override
             public void handle(ActionEvent event) {
-                
+                Label lblResults=new Label();
                 strWebsite = txt.getText();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -117,13 +119,49 @@ public class FXMain extends Application {
                     alert.setContentText(strError2);
                     alert.showAndWait();}
                 else{
-                    WordCount myCount = new WordCount(strWebsite);
+                    //WordCount myCount = new WordCount(strWebsite);
                     
-                    cnt = myCount.CountWords();
+                    /*alert.setAlertType(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Please wait.");
+                    alert.setContentText("This may take a minute or two.");
+                    alert.show();*/
+                    //lblResults.setText("Please wait. \n This may take a minute or two.");
+                    
+                    try {
+                    // Create a socket to connect to the server
+                    Socket socket = new Socket("localhost", 8000);
+                    // Socket socket = new Socket("130.254.204.36", 8000);
+                    // Socket socket = new Socket("drake.Armstrong.edu", 8000);
+
+                    // Create an input stream to receive data from the server
+                    fromServer = new DataInputStream(socket.getInputStream());
+
+                    // Create an output stream to send data to the server
+                    toServer = new DataOutputStream(socket.getOutputStream());
+                  }
+                  catch (IOException ex) {
+                    lblResults.setText(ex.toString() + '\n');
+                  }                    
+                    
+                    try{
+                    // Send the website address to the server
+                    toServer.writeUTF(strWebsite);
+                    toServer.flush();
+                    
+                    
+                    // Get top 20 list of words from the server
+                    strResults = fromServer.readUTF();
+                    }
+                    catch(Exception e)
+                    {
+                       System.out.println(e.getMessage());
+                    }
+                      
+                    //cnt = myCount.CountWords();
                     Label lbl2 = new Label("Top 20 words");
                     lbl2.setFont(Font.font("Arial", FontWeight.BOLD, 16));
                     grid.add(lbl2,1,3);
-                    Label lblResults=new Label(myCount.strResults);
+                    lblResults=new Label(strResults);
                     lblResults.setWrapText(true);
                     lblResults.setPrefWidth(400);
                     grid.add(lblResults, 1, 4);
@@ -132,7 +170,9 @@ public class FXMain extends Application {
                     alert.setTitle("Count");
                     alert.setHeaderText("Word Count");
                     alert.showAndWait();
-            }}
+
+            }
+            }
         });
         
         grid.add(btn1, 1, 2);

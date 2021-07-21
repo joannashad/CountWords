@@ -52,6 +52,7 @@ public class MySQLAccess {
 * Does not produce a <code>resultset</code>
 * 
 * @param    query   the mySQL procedure or statement to run
+* @throws Exception exception
 * @author:  Joanna Smith
 * @version  4.0
 * @see      execWithParameters
@@ -91,6 +92,8 @@ public class MySQLAccess {
 * Does not produce a <code>resultset</code>
 * 
 * @param    query   the mySQL procedure or statement to run
+* @param    params   a list of the parameters to add to the query
+* @throws   Exception  exception
 * @author:  Joanna Smith
 * @version  4.0
 * @see      execSP
@@ -120,7 +123,7 @@ public class MySQLAccess {
             resultSet = preparedStatement.executeQuery();
             
             } catch (Exception e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
             throw e;
         } finally {
             close();
@@ -136,6 +139,7 @@ public class MySQLAccess {
 * 
 * @param    query   the mySQL procedure or statement to run
 * @param    params  the list of parameters to pass to the query/statement
+* @throws   Exception exception
 * @return   CachedRowSet a copy of the resultSet returned in the query
 * @author:  Joanna Smith
 * @version  4.0
@@ -191,6 +195,7 @@ public class MySQLAccess {
 * Produces a <code>resultset</code>
 * 
 * @param    query   the mySQL procedure or statement to run
+* @throws   Exception exception
 * @return   CachedRowSet  a copy of the resultSet returned in the query
 * @author:  Joanna Smith
 * @version  4.0
@@ -201,13 +206,13 @@ public class MySQLAccess {
 * @see      close
 */
    public CachedRowSet execResults( String query) throws Exception{
-        
             RowSetFactory factory = RowSetProvider.newFactory();
             CachedRowSet rowset = factory.createCachedRowSet();
             
          try {
             // This will load the MySQL driver, each DB has its own driver
-            Class.forName(driver);
+            
+            Class.forName(driver).newInstance();
             // Setup the connection with the DB
             connect = DriverManager
                     .getConnection(conn);
@@ -217,9 +222,12 @@ public class MySQLAccess {
             preparedStatement = connect
                     .prepareStatement(query);
            
+            // Parameters start with 1
+
             resultSet = preparedStatement.executeQuery();
             
             rowset.populate(resultSet);
+            
             
     
             } catch (Exception e) {
@@ -238,6 +246,7 @@ public class MySQLAccess {
 * 
 * @param    query   the mySQL procedure or statement to run
 * @param    params  the list of parameters to pass to the query/statement
+* @throws   Exception exception
 * @return   returnID integer produced by the mySQL procedure, usually the auto-increment from an insert statement
 * @author:  Joanna Smith
 * @version  4.0

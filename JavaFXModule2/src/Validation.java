@@ -30,7 +30,6 @@ public class Validation {
 *                   
 * @return          blank if there is no error, error message if there is an error
 * @see             checkValid
-* @see             WordCount
 * @since           1.0
 */
     public String checkLength(String website){

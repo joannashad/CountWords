@@ -19,44 +19,26 @@ import javax.sql.rowset.CachedRowSet;
 /**
  * 
  *  File: WordCount.java
- *  Description: strips the html out of the website
- *               counts the ocurrances of each word
- *               lists the top 20 most words in the url
+ * Once the validation is done on the provided url, the program will read the file
+ * <ul>
+* <li>strip out html and special characters,
+* <li>collect all of the words in the file in an array,
+* <li> Count the number of words in the array
+* <li> Sort the array by the highest count
+* <li> Display the top 20 words to output in order by top word count
+* <li> Write the top 20 words to a file.
+*</ul>
+
  *
  *   @author: Joanna Smith
  *   @version  3.0 
  */
 public class WordCount {
- /** 
-* Once the validation is done on the provided url, the program will read the file
-* <li>strip out html and special characters,</li>
-* <li>collect all of the words in the file in an array,</li>
-* <li> Count the number of words in the array</li>
-* <li> Sort the array by the highest count</li>
-* <li> Display the top 20 words to output in order by top word count</li>
-* <li> Write the top 20 words to a file.</li>
-*
-* @param website   the url used for reading the words in the file
-* @param x         the x-coordinate of the northwest corner
-*                  of the destination rectangle in pixels
-* @param y         the y-coordinate of the northwest corner
-*                  of the destination rectangle in pixels
-* @param observer  the image observer to be notified as more
-*                  of the image is converted.  May be 
-*                  <code>null</code>
-* @return          <code>true</code> if the image is completely 
-*                  loaded and was painted successfully; 
-*                  <code>false</code> otherwise.
-* @see             Validation
-* @see             WordCount
-* @since           1.0
-*/
 
     private static String strWebsite="";
     private int cnt = 0;
     public String strResults="";
 
-    WordCount(String website) {
 /** 
 * Once the validation is done on the provided url, 
 * the New() constructor requires a website parameter.
@@ -65,8 +47,11 @@ public class WordCount {
 *
 * @param website   the url used for reading the words in the file
 * @see             CountWords
-* @since           1.0
+* @since           4.0
 */
+    
+    WordCount(String website) {
+
         strWebsite = website;
     }
 
@@ -97,16 +82,16 @@ public class WordCount {
         
         URL url = new URL(strWebsite);
         //set the file up so it can be read
-        System.out.println("Open file and read the contents.");
+        //System.out.println("Open file and read the contents.");
         BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
         String readFile="";
         String readLine;
         int startFile=0;
         
             
-        System.out.println("ommit special characters ");
-        System.out.println("Find the beginning of the poem");
-        System.out.println("find the end of the poem ");
+        //System.out.println("ommit special characters ");
+        //System.out.println("Find the beginning of the poem");
+        //System.out.println("find the end of the poem ");
         while((readLine=reader.readLine()) !=null){
         //only keep the regular characters - ommit special characters    
 
@@ -131,10 +116,10 @@ public class WordCount {
             }
         }
         
-        System.out.println("close reader ");
+        //System.out.println("close reader ");
         reader.close();
         
-        System.out.println("separate the individual words");
+        //System.out.println("separate the individual words");
         String[] words =  readFile.split(" ");
         String[] words2 =  readFile.split(" ");
         String thisWord="";
@@ -143,7 +128,7 @@ public class WordCount {
         da.deleteWords();
         
         //loop through each word in the array
-        System.out.println("loop through each word, save to db");
+        //System.out.println("loop through each word, save to db");
         for(int i=0; i<words.length; i++){
                thisWord = words[i];
                if(thisWord.length()>1) {
@@ -157,32 +142,33 @@ public class WordCount {
          BufferedWriter out = new BufferedWriter(new FileWriter("Words.txt"));
          try{
           
-        System.out.println("get the top 20 results from the db");
+        //System.out.println("get the top 20 results from the db");
         CachedRowSet rowset =  da.getWords(true);
-        System.out.println("Resultset length: " + rowset.size() );
+       // System.out.println("Resultset length: " + rowset.size() );
         //loop through each row in the resultset
 
         while (rowset.next()) {
             String  rsWord= rowset.getString("word");
             int rsCount=rowset.getInt("sum_count");
-            System.out.println(rsWord + ": " + rsCount );
+            //System.out.println(rsWord + ": " + rsCount );
             strResults +=rsWord + ": " + rsCount + System.lineSeparator();
         }  
         //grab the total word count from the database
-        totalWordCount = da.getWordCount();
+        //totalWordCount = da.getWordCount();
          }
-         catch(Exception e){
-             
-          System.out.println("Error: " + e.getMessage());
+         catch(Exception e){             
+          e.printStackTrace();        
+          e.printStackTrace();
          }
         //close the file
          out.close();
       }
-      catch (IOException e) {
-          System.out.println("Error: " + e.getMessage());
+      catch(IOException ex) {
+        ex.printStackTrace();
+        ex.printStackTrace();
       }
                 
-        System.out.println("Finished!");
+        //System.out.println("Finished!");
         //System.exit(0);
     
    
