@@ -119,54 +119,25 @@ public class FXMain extends Application {
                     alert.setContentText(strError2);
                     alert.showAndWait();}
                 else{
-                    //WordCount myCount = new WordCount(strWebsite);
+                    WordCount myCount = new WordCount(strWebsite);
                     
                     /*alert.setAlertType(Alert.AlertType.INFORMATION);
                     alert.setTitle("Please wait.");
                     alert.setContentText("This may take a minute or two.");
                     alert.show();*/
                     //lblResults.setText("Please wait. \n This may take a minute or two.");
-                    
-                    try {
-                    // Create a socket to connect to the server
-                    Socket socket = new Socket("localhost", 8000);
-                    // Socket socket = new Socket("130.254.204.36", 8000);
-                    // Socket socket = new Socket("drake.Armstrong.edu", 8000);
-
-                    // Create an input stream to receive data from the server
-                    fromServer = new DataInputStream(socket.getInputStream());
-
-                    // Create an output stream to send data to the server
-                    toServer = new DataOutputStream(socket.getOutputStream());
-                  }
-                  catch (IOException ex) {
-                    lblResults.setText(ex.toString() + '\n');
-                  }                    
-                    
-                    try{
-                    // Send the website address to the server
-                    toServer.writeUTF(strWebsite);
-                    toServer.flush();
-                    
-                    
-                    // Get top 20 list of words from the server
-                    strResults = fromServer.readUTF();
-                    }
-                    catch(Exception e)
-                    {
-                       System.out.println(e.getMessage());
-                    }
-                      
-                    //cnt = myCount.CountWords();
+                     
+                    cnt = myCount.CountWords();
                     Label lbl2 = new Label("Top 20 words");
                     lbl2.setFont(Font.font("Arial", FontWeight.BOLD, 16));
                     grid.add(lbl2,1,3);
-                    lblResults=new Label(strResults);
+                    lblResults=new Label(myCount.strResults);
+                    //lblResults=new Label(strResults);
                     lblResults.setWrapText(true);
                     lblResults.setPrefWidth(400);
                     grid.add(lblResults, 1, 4);
                     alert.setContentText("Finished!");
-                    //alert.setContentText("There are " + cnt + " words in this passage.");
+                    alert.setContentText("There are " + cnt + " words in this passage.");
                     alert.setTitle("Count");
                     alert.setHeaderText("Word Count");
                     alert.showAndWait();
